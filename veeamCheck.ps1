@@ -22,7 +22,7 @@ IF(!$lastSuccessM -and !$lastFailM -and !$lastWarningM){
 
 ##Output the lateast successful backup message
 IF($latestID -eq $lastSuccessI){
-    Write-Output $lastSuccessM
+    Write-Output "!SUCC01: "$lastSuccessM
 }
 
 ##Output the latest failed backup message
