@@ -27,7 +27,7 @@ IF($latestID -eq $lastSuccessI){
 
 ##Output the latest failed backup message
 IF($latestID -eq $lastFailI){
-    Write-Output $lastFailM
+    Write-Output "!ERRFA01: "$lastFailM
     IF(!$lastSuccessD){
         Write-Output "There are no successful backups for this machines in the logs."
     }
@@ -38,7 +38,7 @@ IF($latestID -eq $lastFailI){
 
 ##Output the latest backup warning message
 IF($latestID -eq $lastWarningI){
-    Write-Output $lastWarningM
+    Write-Output "!ERRWAR01: " $lastWarningM
     IF(!$lastSuccessD){
         Write-Output "There are no successful backups for this machines in the logs."
     }
