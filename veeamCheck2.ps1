@@ -1,15 +1,15 @@
 ##Pull the latest success/fail/warning messages
-$lastSuccessM = Get-EventLog "Veeam Agent" -InstanceId 190 -Newest 1 -EntryType Information -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Message
-$lastFailM = Get-EventLog "Veeam Agent" -InstanceId 190 -Newest 1 -EntryType Error -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Message
-$lastWarningM = Get-EventLog "Veeam Agent" -InstanceId 190 -Newest 1 -EntryType Warning -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Message
+$lastSuccessM = Get-EventLog "Veeam Agent" -InstanceId 190 -Newest 1 -EntryType Information -EA 0 | Select -ExpandProperty Message
+$lastFailM = Get-EventLog "Veeam Agent" -InstanceId 190 -Newest 1 -EntryType Error -EA 0 | Select -ExpandProperty Message
+$lastWarningM = Get-EventLog "Veeam Agent" -InstanceId 190 -Newest 1 -EntryType Warning -EA 0 | Select -ExpandProperty Message
 
 ##Pull the latest event index IDs for Veeam Agent success/fail/warnings
-$lastSuccessI = Get-EventLog "Veeam Agent" -InstanceId 190 -Newest 1 -EntryType Information -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Index
-$lastFailI = Get-EventLog "Veeam Agent" -InstanceId 190 -Newest 1 -EntryType Error -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Index
-$lastWarningI = Get-EventLog "Veeam Agent" -InstanceId 190 -Newest 1 -EntryType Warning -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Index
+$lastSuccessI = Get-EventLog "Veeam Agent" -InstanceId 190 -Newest 1 -EntryType Information -EA 0 | Select -ExpandProperty Index
+$lastFailI = Get-EventLog "Veeam Agent" -InstanceId 190 -Newest 1 -EntryType Error -EA 0 | Select -ExpandProperty Index
+$lastWarningI = Get-EventLog "Veeam Agent" -InstanceId 190 -Newest 1 -EntryType Warning -EA 0 | Select -ExpandProperty Index
 
 ##Pull the latest succssful backup date
-$lastSuccessD = Get-EventLog "Veeam Agent" -InstanceId 190 -Newest 1 -EntryType Information -ErrorAction SilentlyContinue | Select-Object -ExpandProperty TimeGenerated
+$lastSuccessD = Get-EventLog "Veeam Agent" -InstanceId 190 -Newest 1 -EntryType Information -EA 0 | Select -ExpandProperty TimeGenerated
 
 ##Determine which status was the most recent out of the previously pulled success/fail/warning Event ID indexes
 $latestID = ($lastSuccessI,$lastFailI,$lastWarningI | Measure-Object -Maximum).Maximum
@@ -46,7 +46,3 @@ IF($latestID -eq $lastWarningI){
         Write-Output "Last Successful Backup: $lastSuccessD"
     }
 }
-
-
-##this is to show how a PUSH works. Check it...
-##Test from Matthew's computer
