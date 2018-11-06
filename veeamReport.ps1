@@ -8,7 +8,7 @@ Function Veeam-BackupReport {
     of days you specify in the Days parameter.
 
     .PARAMETER Days
-    Specify how many days worth of backups you want to generate the report for.
+    Specify how many days worth of backups you want to generate the report for. If unspecified, the default value is 7 days.
 
     .EXAMPLE
     C:\PS> Veeam-BackupReport -Days 30
@@ -17,7 +17,6 @@ Function Veeam-BackupReport {
   [CmdletBinding()]
 
   Param(
-    [Parameter(Mandatory = $True)]
     [int]$Days
   )
 
@@ -35,7 +34,7 @@ Function Veeam-BackupReport {
   $outputFile = "C:\VeeamBackupReport.html"
 
   ## Delete last instance of this report
-  del $outputFile -ErrorAction SilentlyContinue
+  del $outputFile -EA 0
 
   ## Create arrays
   $JobInventory = @()
