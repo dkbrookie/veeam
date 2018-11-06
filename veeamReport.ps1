@@ -18,8 +18,14 @@ Function Veeam-BackupReport {
 
   Param(
     [Parameter(Mandatory = $True)]
-    [string]$Days
+    [int]$Days
   )
+
+  ## In case there is no input for days
+  If(!$Days) {
+    Write-Output "No specific date range was defined, generating report with the default 7 days. Define the -Days to change this value."
+    $Days = 7
+  }
 
   ## Variable Set Prep
   Add-PsSnapin veeampssnapin
