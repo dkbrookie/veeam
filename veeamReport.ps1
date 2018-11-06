@@ -20,6 +20,13 @@ Function Veeam-BackupReport {
     [int]$Days
   )
 
+  ## Verify Veeam B&R is installed
+  $veeamCheck = ((Get-ChildItem "HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall") | Where-Object { $_.GetValue( "DisplayName" ) -eq "Veeam Backup & Replication" } ).Length -gt 0
+  If(!$veeamCheck) {
+    Write-Output "Veeam B&R is not installed. Please run this on a Veeam B&R server. Exiting script."
+    Return
+  }
+
   ## In case there is no input for days
   If(!$Days) {
     Write-Output "No specific date range was defined, generating report with the default 7 days. Define the -Days to change this value."
