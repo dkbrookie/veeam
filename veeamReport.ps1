@@ -106,7 +106,7 @@ TD {border-width: 1px;padding: 3px;border-style: solid;border-color: black; font
   }
 
   ## Build the report
-  ConvertTo-HTML -head $header -body "<center><H1>$server Weekly Backup Report</H1>$timeSpan - $today</center><P>
+  ConvertTo-HTML -head $header -body "<center><H1>$server Backup Report</H1>$timeSpan - $today</center><P>
 
   <H2>Backup Repositories</H2>$RepositoryHTML<P>
 
