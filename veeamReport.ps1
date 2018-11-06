@@ -29,7 +29,7 @@ Function Veeam-BackupReport {
 
   ## In case there is no input for days
   If(!$Days) {
-    Write-Output "No specific date range was defined, generating report with the default 7 days. Define the -Days to change this value."
+    Write-Output "No specific date range was defined, generating report with the default 7 days. Define the -Days parameter to change this value."
     $Days = 7
   }
 
