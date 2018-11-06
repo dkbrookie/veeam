@@ -1,25 +1,43 @@
-### LABTECH START ###
+Function Veeam-BackupReport {
+  <#
+    .SYNOPSIS
+    Veeam-BackupReport
 
-$outputfile = "Inventory.html"
+    .DESCRIPTION
+    Veeam-BackupReport will generate a report at C:\VeeamBackupReport.html with detailed results for all jobs completed in the number
+    of days you specify in the Days parameter.
 
-#Delete last instance of this report.
-del $outputfile -ErrorAction SilentlyContinue
+    .PARAMETER Days
+    Specify how many days worth of backups you want to generate the report for.
 
-add-pssnapin veeampssnapin
+    .EXAMPLE
+    C:\PS> Veeam-BackupReport -Days 30
+  #>
 
-### GETTING ALL THE THINGS ###
-$today = get-date
-$timespan = (get-date).adddays(-7)
-$server = get-vbrserversession | select-object -expandproperty server
+  [CmdletBinding()]
 
-### MAKE THE ARRAYS ###
-$JobInventory = @()
-$RepositoryInventory = @()
-$CloudInventory = @()
-$TaskInventory = @()
+  Param(
+    [Parameter(Mandatory = $True)]
+    [string]$Days
+  )
 
+  ## Variable Set Prep
+  add-pssnapin veeampssnapin
+  $today = Get-Date
+  $timeSpan = (Get-Date).adddays(-$Days)
+  $server = Get-Vbrserversession | Select-Object -expandproperty server
+  $outputFile = "C:\VeeamBackupReport.html"
 
-### FORMAT THE HTML ###
+  ## Delete last instance of this report
+  del $outputFile -ErrorAction SilentlyContinue
+
+  ## Create arrays
+  $JobInventory = @()
+  $RepositoryInventory = @()
+  $CloudInventory = @()
+  $TaskInventory = @()
+
+## Format HTML
 $Header = @"
 <style>
 TABLE {border-width: 1px;border-style: solid;border-color: black;border-collapse: collapse;}
@@ -28,27 +46,28 @@ TD {border-width: 1px;padding: 3px;border-style: solid;border-color: black; font
 </style>
 "@
 
-### STARTING JOB INVENTORY ###
-$jobs = get-vbrjob  | sort-object name
-foreach ($job in $jobs) {
+  ## Start job inventory
+  $jobs = get-vbrjob  | sort-object name
+  ForEach ($job in $jobs) {
     $jobtype = $job.jobtype
     $JobAlgorithm = $job.findlastsession().info.jobalgorithm
     $jobduration = $job.findlastsession().progress.duration
     $TargetHostID = $job.info.targetrepositoryid.guid
     $repository = Get-VBRBackupRepository | where-object {$_.ID -eq $TargetHostID}
     $JobInventory += New-Object PSobject -Property @{
-    'Name' = $job.name
-    'Type' = "$jobtype $jobalgorithm"
-    'Repository' = $repository.name
-    'Start Time' = $job.findlastsession().progress.starttime
-    'End Time' = $job.findlastsession().progress.stoptime
-    'Duration' = $jobduration.ToString("hh\:mm\:ss") }
-$JobHTML = $JobInventory | select-object "Name", "Type", "Start Time", "End Time", "Duration", "Repository"  | ConvertTo-HTML -fragment
-}
+      'Name' = $job.name
+      'Type' = "$jobtype $jobalgorithm"
+      'Repository' = $repository.name
+      'Start Time' = $job.findlastsession().progress.starttime
+      'End Time' = $job.findlastsession().progress.stoptime
+      'Duration' = $jobduration.ToString("hh\:mm\:ss")
+    }
+  $JobHTML = $JobInventory | Select-Object "Name", "Type", "Start Time", "End Time", "Duration", "Repository"  | ConvertTo-HTML -Fragment
+  }
 
-### STARTING BACKUP REPOSITORY INVENTORY ###
-$repositories = Get-VBRBackupRepository | sort-object name
-foreach ($repository in $repositories) {
+  ## Start backup repository inventory
+  $repositories = Get-VBRBackupRepository | sort-object name
+  ForEach ($repository in $repositories) {
     $path = $repository.friendlypath
     $cloud = $repository.cloudprovider.hostname
     $capacity = ($repository.info.CachedTotalSpace) / 1GB
@@ -56,48 +75,46 @@ foreach ($repository in $repositories) {
     $freespaceGB = ($repository.info.CachedFreeSpace) / 1GB
     $freespaceGB = "{0:N0}" -f $freespaceGB
     $RepositoryInventory += New-Object PSobject -Property @{
-    'Name' = $repository.name
-    'Type' = $repository.typedisplay
-    'Path' = "$path $cloud"
-    'Capacity GB' = $capacity
-    'Free Space GB' = $freespaceGB
-    'Description' = $repository.description}
-$RepositoryHTML = $RepositoryInventory | select-object "Name", "Type", "Path", "Capacity GB", "Free Space GB", "Description" | ConvertTo-HTML -fragment
-}
+      'Name' = $repository.name
+      'Type' = $repository.typedisplay
+      'Path' = "$path $cloud"
+      'Capacity GB' = $capacity
+      'Free Space GB' = $freespaceGB
+      'Description' = $repository.description
+    }
+  $RepositoryHTML = $RepositoryInventory | Select-Object "Name", "Type", "Path", "Capacity GB", "Free Space GB", "Description" | ConvertTo-HTML -Fragment
+  }
 
+  ## Start task inventory
+  $sessions = get-vbrbackupsession | where-object {$_.creationtime -ge $timeSpan}
+  $tasks = $sessions.gettasksessions() | sort-object name, {$_.jobsess.creationtime}
 
-
-### STARTING TASKS INVENTORY ###
-$sessions = get-vbrbackupsession | where-object {$_.creationtime -ge $timespan}
-$tasks = $sessions.gettasksessions() | sort-object name, {$_.jobsess.creationtime}
-
-foreach ($task in $tasks) {
+  ForEach ($task in $tasks) {
     $duration = new-timespan -start $task.jobsess.creationtime -end $task.jobsess.endtime
     $MBs = ($task.progress.avgspeed / 1MB)
     $TransferredGB = $task.progress.transferedsize / 1GB
     $TaskInventory += New-Object PSobject -Property @{
-    'Name' = $task.name
-    'Status' = $task.status
-    'Start Time' = $task.jobsess.creationtime
-    'End Time' = $task.jobsess.endtime
-    'SizeGB' = "{0:N2}" -f $TransferredGB
-    'Duration' = $duration.ToString("hh\:mm\:ss")
-    'MB/s' = "{0:N3}" -f $MBs
-    'Details' = $task.info.reason
+      'Name' = $task.name
+      'Status' = $task.status
+      'Start Time' = $task.jobsess.creationtime
+      'End Time' = $task.jobsess.endtime
+      'SizeGB' = "{0:N2}" -f $TransferredGB
+      'Duration' = $duration.ToString("hh\:mm\:ss")
+      'MB/s' = "{0:N3}" -f $MBs
+      'Details' = $task.info.reason
+    }
+  $TaskHTML = $TaskInventory | Select-Object Name, Status, "Start Time", "End Time", SizeGB, Duration, 'MB/s', Details | ConvertTo-HTML -Fragment
+  }
 
+  ## Build the report
+  ConvertTo-HTML -head $header -body "<center><H1>$server Weekly Backup Report</H1>$timeSpan - $today</center><P>
+
+  <H2>Backup Repositories</H2>$RepositoryHTML<P>
+
+  <H2>Backup Jobs</H2>$JobHTML<P>
+
+  <H2>Backup Tasks</H2>$TaskHTML<P>
+
+
+  " | Out-file $outputFile
 }
-$TaskHTML = $TaskInventory | select-object Name, Status, "Start Time", "End Time", SizeGB, Duration, 'MB/s', Details | ConvertTo-HTML -fragment
-}
-
-### BUILDING REPORT ###
-
-ConvertTo-HTML -head $header -body "<center><H1>$server Weekly Backup Report</H1>$timespan - $today</center><P>
-
-<H2>Backup Repositories</H2>$RepositoryHTML<P>
-
-<H2>Backup Jobs</H2>$JobHTML<P>
-
-<H2>Backup Tasks</H2>$TaskHTML<P>
-
-
-" | Out-file C:\Inventory.html
