@@ -23,7 +23,7 @@ Function Veeam-BackupReport {
 
   ## Delete last instance of this report
   del $outputFile -ErrorAction SilentlyContinue
-  
+
   ## Variable Set Prep
   add-pssnapin veeampssnapin
   $today = Get-Date
@@ -47,15 +47,14 @@ TH {white-space: nowrap; border-width: 1px;padding: 3px;border-style: solid;bord
 TD {border-width: 1px;padding: 3px;border-style: solid;border-color: black; font-family: Tahoma;font-size: 11px; white-space: nowrap;}
 </style>
 "@
-
   ## Start job inventory
-  $jobs = get-vbrjob  | sort-object name
+  $jobs = Get-VBRJob  | Sort-Object name
   ForEach ($job in $jobs) {
     $jobtype = $job.jobtype
     $JobAlgorithm = $job.findlastsession().info.jobalgorithm
     $jobduration = $job.findlastsession().progress.duration
     $TargetHostID = $job.info.targetrepositoryid.guid
-    $repository = Get-VBRBackupRepository | where-object {$_.ID -eq $TargetHostID}
+    $repository = Get-VBRBackupRepository | Where-Object {$_.ID -eq $TargetHostID}
     $JobInventory += New-Object PSobject -Property @{
       'Name' = $job.name
       'Type' = "$jobtype $jobalgorithm"
@@ -68,7 +67,7 @@ TD {border-width: 1px;padding: 3px;border-style: solid;border-color: black; font
   }
 
   ## Start backup repository inventory
-  $repositories = Get-VBRBackupRepository | sort-object name
+  $repositories = Get-VBRBackupRepository | Sort-Object name
   ForEach ($repository in $repositories) {
     $path = $repository.friendlypath
     $cloud = $repository.cloudprovider.hostname
@@ -88,11 +87,11 @@ TD {border-width: 1px;padding: 3px;border-style: solid;border-color: black; font
   }
 
   ## Start task inventory
-  $sessions = get-vbrbackupsession | where-object {$_.creationtime -ge $timeSpan}
-  $tasks = $sessions.gettasksessions() | sort-object name, {$_.jobsess.creationtime}
+  $sessions = Get-VBRBackupsession | Where-Object {$_.creationtime -ge $timeSpan}
+  $tasks = $sessions.gettasksessions() | Sort-Object name, {$_.jobsess.creationtime}
 
   ForEach ($task in $tasks) {
-    $duration = new-timespan -start $task.jobsess.creationtime -end $task.jobsess.endtime
+    $duration = New-Timespan -start $task.jobsess.creationtime -end $task.jobsess.endtime
     $MBs = ($task.progress.avgspeed / 1MB)
     $TransferredGB = $task.progress.transferedsize / 1GB
     $TaskInventory += New-Object PSobject -Property @{
