@@ -21,6 +21,9 @@ Function Veeam-BackupReport {
     [string]$Days
   )
 
+  ## Delete last instance of this report
+  del $outputFile -ErrorAction SilentlyContinue
+  
   ## Variable Set Prep
   add-pssnapin veeampssnapin
   $today = Get-Date
@@ -28,8 +31,7 @@ Function Veeam-BackupReport {
   $server = Get-Vbrserversession | Select-Object -expandproperty server
   $outputFile = "C:\VeeamBackupReport.html"
 
-  ## Delete last instance of this report
-  del $outputFile -ErrorAction SilentlyContinue
+
 
   ## Create arrays
   $JobInventory = @()
