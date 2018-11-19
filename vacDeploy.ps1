@@ -1,4 +1,4 @@
-
+#region getOSInfo
 Try {
   If((Get-WmiObject win32_operatingsystem | Select-Object -ExpandProperty osarchitecture) -eq '64-bit') {
     $osVer = 'x64'
@@ -6,21 +6,28 @@ Try {
     $osVer = 'x86'
   }
 } Catch {
-  Write-Error 'Unable to determine OS architecture' | Out-File $logFile -Append
+  Write-Error "Unable to determine OS architecture" | Out-File $logFile -Append
   Return
 }
+#endregion getOSInfo
 
-$agentDL = "URLHERE"
+#region checkFiles
+$agentLink = "https://support.dkbinnovative.com/labtech/transfer/software/veeam/vac/vacagent$osVer.zip"
 $dlDir = "$env:windir\LTSvc\packages\veeam\VACAgent"
-$VACAgent = "$dlDir\VACAgent$osVer.zip"
+$VACAgentZip = "$dlDir\VACAgent$osVer.zip"
 
-If(!(Test-Path $dlDir)) {
-  New-Item -ItemType Directory $dlDir
-}
+Try {
+  If(!(Test-Path $dlDir)) {
+    New-Item -ItemType Directory $dlDir
+  }
 
-If(!(Test-Path $VACAgent -PathType Leaf)) {
-  Start-BitsTransfer -Source HERE -Destination $VACAgent
+  If(!(Test-Path $VACAgentZip -PathType Leaf)) {
+    Start-BitsTransfer -Source $agentLink -Destination $VACAgentZip
+  }
+} Catch {
+  Write-Error "Failed to download the VAC Agent"
 }
+#endregion checkFiles
 
 
 msiexec /i c:\VAC.CommunicationAgent.x64.msi /qn CC_GATEWAY=veeam.dkbinnovative.com VAC_TENANT=DKB VAC_TENANT_PASSWORD=J9NL3FLEr=EgYSME
