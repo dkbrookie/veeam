@@ -1,24 +1,8 @@
-Function Is-Installed($AppName) {
-
-    $x86 = ((Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall") |
-        Where-Object { $_.GetValue( "DisplayName" ) -like "*$program*" } ).Length -gt 0;
-
-    $x64 = ((Get-ChildItem "HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall") |
-        Where-Object { $_.GetValue( "DisplayName" ) -like "*$program*" } ).Length -gt 0;
-
-    Return $x86 -or $x64;
-}
-
-$installStatus = Is-Installed -AppName "Veeam Availability Console"
-If($installStatus -eq $True) {
-  Write-Output "VAC Agent is already installed, exiting script."
-  Return
-}
-
-
-$vccUrl = 
-$tenantID =
-$tenantPassword =
+#region automateVars
+$vccUrl = "@vccURL@"
+$tenantID = "@tenantID@"
+$tenantPassword ="@tenantPassword@"
+#endregion automateVars
 
 
 #region getOSInfo
@@ -33,6 +17,7 @@ Try {
   Return
 }
 #endregion getOSInfo
+
 
 #region checkFiles
 $vacLink = "https://support.dkbinnovative.com/labtech/transfer/software/veeam/vac/vacagent$osVer.zip"
@@ -69,7 +54,10 @@ Try {
 }
 #endregion checkFiles
 
+
 #region installVAC
-&$7zipExe x $vacAgentZip -o"$vacDir" -y | Out-Null
-&msiexec /i "$vacDir\VAC.CommunicationAgent.x64.msi" /qn CC_GATEWAY=$vccUrl VAC_TENANT=$tenantID VAC_TENANT_PASSWORD=$tenantPassword -Wait
+## Unzip the downloaded VAC zip
+Start-Process $7zipExe -Wait -ArgumentList "x $vacAgentZip -o""$vacDir"" -y"
+## Install VAC Agent
+Start-Process msiexec.exe -Wait -ArgumentList "/i ""$vacDir\VACAgent$osVer\VAC.CommunicationAgent.x64.msi"" /qn CC_GATEWAY=$vccUrl VAC_TENANT=$tenantID VAC_TENANT_PASSWORD=$tenantPassword"
 #endregion installVAC
