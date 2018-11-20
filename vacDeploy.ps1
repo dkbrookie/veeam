@@ -1,6 +1,24 @@
+Function Is-Installed($AppName) {
+
+    $x86 = ((Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall") |
+        Where-Object { $_.GetValue( "DisplayName" ) -like "*$program*" } ).Length -gt 0;
+
+    $x64 = ((Get-ChildItem "HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall") |
+        Where-Object { $_.GetValue( "DisplayName" ) -like "*$program*" } ).Length -gt 0;
+
+    Return $x86 -or $x64;
+}
+
+$installStatus = Is-Installed -AppName "Veeam Availability Console"
+If($installStatus -eq $True) {
+  Write-Output "VAC Agent is already installed, exiting script."
+  Return
+}
+
+
 $vccUrl = "veeam.dkbinnovative.com"
-$tenantID =
-$tenantPassword =
+$tenantID = "DKB"
+$tenantPassword ="J9NL3FLEr=EgYSME"
 
 
 #region getOSInfo
@@ -47,10 +65,11 @@ Try {
     }
   }
 } Catch {
-  Write-Error "Failed to download the VAC Agent"
+  Write-Error "Failed to download all required files"
 }
 #endregion checkFiles
 
 #region installVAC
+&$7zipExe x $vacAgentZip -o$vaDir -y | Out-Null
 msiexec /i "$vacDir\VAC.CommunicationAgent.x64.msi" /qn CC_GATEWAY=$vccUrl VAC_TENANT=$tenantID VAC_TENANT_PASSWORD=$tenantPassword
 #endregion installVAC
