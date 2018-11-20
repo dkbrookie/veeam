@@ -16,9 +16,9 @@ If($installStatus -eq $True) {
 }
 
 
-$vccUrl = "veeam.dkbinnovative.com"
-$tenantID = "DKB"
-$tenantPassword ="J9NL3FLEr=EgYSME"
+$vccUrl = 
+$tenantID =
+$tenantPassword =
 
 
 #region getOSInfo
@@ -70,6 +70,6 @@ Try {
 #endregion checkFiles
 
 #region installVAC
-&$7zipExe x $vacAgentZip -o$vaDir -y | Out-Null
-msiexec /i "$vacDir\VAC.CommunicationAgent.x64.msi" /qn CC_GATEWAY=$vccUrl VAC_TENANT=$tenantID VAC_TENANT_PASSWORD=$tenantPassword
+&$7zipExe x $vacAgentZip -o"$vacDir" -y | Out-Null
+&msiexec /i "$vacDir\VAC.CommunicationAgent.x64.msi" /qn CC_GATEWAY=$vccUrl VAC_TENANT=$tenantID VAC_TENANT_PASSWORD=$tenantPassword -Wait
 #endregion installVAC
