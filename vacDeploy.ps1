@@ -1,9 +1,12 @@
-#region automateVars
+<#
+These URLs are set in Automate before the script is called as seen below...
+
 $vccUrl = "@vccURL@"
 $tenantID = "@tenantID@"
 $tenantPassword ="@tenantPassword@"
-#endregion automateVars
 
+Each var is pulled from the %ClientID% for the corresponding Veeam EDFs.
+#>
 
 #region getOSInfo
 Try {
