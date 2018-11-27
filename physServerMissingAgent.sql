@@ -16,9 +16,7 @@ WHERE
   AND c.BiosName <> ''
   AND c.BiosName NOT LIKE '%vmware%'
   AND c.BiosName <> 'KVM'
-  AND c.ComputerID NOT IN (SELECT ComputerID FROM software WHERE `Name` = 'Veeam Agent for Microsoft Windows' OR `Name` LIKE '%ShadowProtect%')
+  AND c.ComputerID NOT IN (SELECT ComputerID FROM software WHERE `Name` = 'Veeam Agent for Microsoft Windows' OR `Name` = 'StorageCraft ShadowProtect SPX')
+  AND c.LocationID <> 1
 GROUP BY
   c.ComputerID
-ORDER BY
-  cl.Name,
-  c.Name
