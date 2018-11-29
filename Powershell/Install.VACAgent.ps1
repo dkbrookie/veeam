@@ -8,19 +8,14 @@ $tenantPassword ="@tenantPassword@"
 Each var is pulled from the %ClientID% for the corresponding Veeam EDFs.
 #>
 
-#region getOSInfo
-Try {
-  If((Get-WmiObject win32_operatingsystem | Select-Object -ExpandProperty osarchitecture) -eq '64-bit') {
-    $osVer = 'x64'
-  } Else {
-    $osVer = 'x86'
-  }
-} Catch {
-  Write-Error "Unable to determine OS architecture" | Out-File $logFile -Append
+## call OS bit check script
+If(!$WebClient) {
+  Write-Error "The $WebClient var is empty, meaning the call to GitHub with the token to access the private repo doesn't exist."
   Return
+} Else {
+  ($WebClient).DownloadString('https://raw.githubusercontent.com/dkbrookie/PowershellFunctions/master/Function.Get-OSBit.ps1') | iex
+  $osVer = Get-OSBit
 }
-#endregion getOSInfo
-
 
 #region checkFiles
 $vacLink = "https://support.dkbinnovative.com/labtech/transfer/software/veeam/vac/vacagent$osVer.zip"
