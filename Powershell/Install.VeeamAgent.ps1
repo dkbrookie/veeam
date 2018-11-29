@@ -8,8 +8,8 @@ If(!$WebClient) {
 $osVer = Get-OSBit
 
 #region checkFiles
-$agentLink = "https://support.dkbinnovative.com/labtech/transfer/software/veeam/vac/vacagent$osVer.zip"
-$agentDir = "$env:windir\LTSvc\packages\software\veeam\VACAgent"
+$agentLink = "https://support.dkbinnovative.com/labtech/transfer/software/veeam/agent/VeeamAgentWindows_2.2.0.589.exe"
+$agentDir = "$env:windir\LTSvc\packages\software\Veeam\Agent"
 $agentExe = "$agentDir\VeeamAgentWindows_2.2.0.589.exe"
 
 Try {
