@@ -33,5 +33,5 @@ Try {
 
 #region installVeeam
 ## Install VAC Agent
-Start-Process $agentExe -Wait -ArgumentList "/silent /accepteula"
+Start-Process $agentExe -ArgumentList "/silent /accepteula"
 #endregion installVeeam
