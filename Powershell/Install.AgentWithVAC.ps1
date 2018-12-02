@@ -1,5 +1,5 @@
 If(!$WebClient) {
-  Write-Error "The $WebClient var is empty, meaning the call to GitHub with the token to access the private repo doesn't exist."
+  Write-Error "The $WebClient var is empty, meaning the call to GitHub with the token to access the private repo doesn't exist. Exiting script."
   Return
 }
 
