@@ -18,7 +18,7 @@ Try {
   }
 
   If(!(Test-Path $agentExe -PathType Leaf)) {
-    ($WebClient).DownloadString('https://raw.githubusercontent.com/dkbrookie/PowershellFunctions/master/Function.Get-OSBit.ps1') | iex
+    ($WebClient).DownloadString('https://raw.githubusercontent.com/dkbrookie/PowershellFunctions/master/Function.Get-FileDownload.ps1') | iex
     Get-FileDownload -FileURL $agentLink -DestinationFile $agentExe
     If(!(Test-Path $agentExe -PathType Leaf)) {
       Write-Error "Failed to download $agentExe"
