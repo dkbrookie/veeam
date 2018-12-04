@@ -6,18 +6,8 @@ If(!$WebClient) {
 $veeamAgent = "Veeam Agent for Microsoft Windows"
 $vacAgent = "Veeam Availability Console Communication Agent"
 
-## call the Get-InstallApp function to check if these applications are already installed
-($WebClient).DownloadString('https://raw.githubusercontent.com/dkbrookie/PowershellFunctions/master/Function.Get-InstalledApp.ps1') | iex
-If(!(Get-InstalledApp -AppName $veeamAgent)) {
-  ## Calls the Veeam Agent installation script
-  ($WebClient).DownloadString('https://raw.githubusercontent.com/dkbrookie/veeam/master/Powershell/Install.VeeamAgent.ps1') | iex
-} Else {
-  Write-Output "Verified $veeamAgent is installed"
-}
+## Calls the Veeam Agent installation script
+($WebClient).DownloadString('https://raw.githubusercontent.com/dkbrookie/veeam/master/Powershell/Install.VeeamAgent.ps1') | iex
 
-If(!(Get-InstalledApp -AppName $vacAgent)) {
-  ## Calls the VAC Agent installation script
-  ($WebClient).DownloadString('https://raw.githubusercontent.com/dkbrookie/veeam/master/Powershell/Install.VACAgent.ps1') | iex
-} Else {
-  Write-Output "Verified $vacAgent is installed"
-}
+## Calls the VAC Agent installation script
+($WebClient).DownloadString('https://raw.githubusercontent.com/dkbrookie/veeam/master/Powershell/Install.VACAgent.ps1') | iex
