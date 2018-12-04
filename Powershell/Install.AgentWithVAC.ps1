@@ -3,9 +3,6 @@ If(!$WebClient) {
   Return
 }
 
-$veeamAgent = "Veeam Agent for Microsoft Windows"
-$vacAgent = "Veeam Availability Console Communication Agent"
-
 ## Calls the Veeam Agent installation script
 ($WebClient).DownloadString('https://raw.githubusercontent.com/dkbrookie/veeam/master/Powershell/Install.VeeamAgent.ps1') | iex
 
