@@ -1,5 +1,5 @@
 <#
-These URLs are set in Automate before the script is called as seen below...
+These vars are set in Automate before the script is called as seen below...
 
 $vccUrl = "@vccURL@"
 $tenantID = "@tenantID@"

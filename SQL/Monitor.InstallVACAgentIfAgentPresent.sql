@@ -8,7 +8,7 @@ Agent so we can control all Veeam Agents from our central management portal.
 */
 
 SELECT DISTINCT
-  s.ComputerID AS TestValue,
+  'Missing VAC Agent' AS TestValue,
   c.Name AS IdentityField,
   s.ComputerID,
   acd.NoAlerts,
