@@ -3,6 +3,12 @@ If(!$WebClient) {
   Return
 }
 
+## Delete the reboot pending reg key if it exists so Veeam can successfully install
+$rebootKey = Test-Path "HKLM:\SOFTWARE\Microsoft\WIndows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired"
+If($rebootKey) {
+  Remove-Item "HKLM:\SOFTWARE\Microsoft\WIndows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired"
+}
+
 ## call OS bit check script
 ($WebClient).DownloadString('https://raw.githubusercontent.com/dkbrookie/PowershellFunctions/master/Function.Get-OSBit.ps1') | iex
 $osVer = Get-OSBit
