@@ -64,3 +64,4 @@ Start-Process msiexec.exe -Wait -ArgumentList "/i ""$vacDir\VACAgent$osVer\VAC.C
 Start-Sleep -s 30
 Stop-Service -Name VeeamManagementAgentSvc -Force
 Start-Service -Name VeeamManagementAgentSvc
+Write-Host "VAC Agent installation complete"

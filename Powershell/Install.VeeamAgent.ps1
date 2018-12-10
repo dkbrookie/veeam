@@ -7,6 +7,7 @@ If(!$WebClient) {
 $rebootKey = Test-Path "HKLM:\SOFTWARE\Microsoft\WIndows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired"
 If($rebootKey) {
   Remove-Item $rebootKey
+  Write-Host "Note there was a reboot pending, but the script auto deleted the reboot pending key to attempt to install Veeam Agent without a reboot. If the install still fails, reboot the machine before retrying."
 }
 
 ## Call OS bit check script
@@ -39,5 +40,6 @@ Try {
 
 #region installVeeam
 ## Install VAC Agent
-Start-Process $agentExe -ArgumentList "/silent /accepteula"
+Start-Process $agentExe -Wait -ArgumentList "/silent /accepteula"
+Write-Host "Veeam Agent installation complete"
 #endregion installVeeam
