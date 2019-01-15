@@ -9,7 +9,7 @@ Agent so we can control all Veeam Agents from our central management portal.
 
 SELECT DISTINCT
   'Missing VAC Agent' AS TestValue,
-  c.Name AS IdentityField,
+  CONCAT(cl.Name," - ",c.Name) AS IdentityField,
   s.ComputerID,
   acd.NoAlerts,
   acd.UpTimeStart,
@@ -19,6 +19,9 @@ FROM
 JOIN
   software s
   ON s.`ComputerID` = c.`ComputerID`
+JOIN
+  clients cl
+  ON c.ClientID = cl.ClientID
 JOIN
   AgentComputerData acd
   ON acd.`ComputerID` = c.`ComputerID`
