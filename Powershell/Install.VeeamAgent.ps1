@@ -15,7 +15,7 @@ If($rebootKey) {
 $osVer = Get-OSBit
 
 #region checkFiles
-$agentLink = "https://drive.google.com/uc?export=download&id=12Cu9ZG5iEl9_Iaqod6vaj2wQj1HvS3cK"
+$agentLink = "https://drive.google.com/uc?export=download&confirm=PwPe&id=12Cu9ZG5iEl9_Iaqod6vaj2wQj1HvS3cK"
 $agentDir = "$env:windir\LTSvc\packages\software\Veeam\Agent"
 $agentExe = "$agentDir\VeeamAgentWindows_2.2.0.589.exe"
 
