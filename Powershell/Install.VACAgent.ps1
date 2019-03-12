@@ -18,11 +18,15 @@ If(!$WebClient) {
 }
 
 #region checkFiles
-$vacLink = "https://support.dkbinnovative.com/labtech/transfer/software/veeam/vac/vacagent$osVer.zip"
+If ($osVers -eq 'x64') {
+    $vacLink = "https://drive.google.com/uc?export=download&id=11rsphCqlgdBuMORQiiOkyF4DtRFmhSaz"
+} Else {
+    $vacLink = "https://drive.google.com/uc?export=download&id=11vD9jxOTWIDuEU4zCGqZN2DRTxLBFvW7"
+}
 $vacDir = "$env:windir\LTSvc\packages\software\veeam\VACAgent"
 $VACAgentZip = "$vacDir\VACAgent$osVer.zip"
 $7zipDir = "$env:windir\LTSvc\packages\software\7zip"
-$7zipURL = "https://support.dkbinnovative.com/labtech/Transfer/software/7zip/7za.exe"
+$7zipURL = "https://drive.google.com/uc?export=download&id=1254V6vqPLD9mseDHvQns--NLMAGDvpd2"
 $7zipExe = "$7zipDir\7zip.exe"
 
 Try {
