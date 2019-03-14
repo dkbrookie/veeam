@@ -9,12 +9,12 @@ Each var is pulled from the %ClientID% for the corresponding Veeam EDFs.
 #>
 
 ## call OS bit check script
-If(!$WebClient) {
-  Write-Error "The $WebClient var is empty, meaning the call to GitHub with the token to access the private repo doesn't exist."
-  Return
+
+$osVer = [IntPtr]::size
+If ($osVer = 8) {
+    $osVer = "x64"
 } Else {
-  ($WebClient).DownloadString('https://raw.githubusercontent.com/dkbrookie/PowershellFunctions/master/Function.Get-OSBit.ps1') | iex
-  $osVer = Get-OSBit
+    $osVer = "x86"
 }
 
 #region checkFiles
@@ -35,7 +35,7 @@ Try {
   }
 
   If(!(Test-Path $VACAgentZip -PathType Leaf)) {
-    Start-BitsTransfer -Source $vacLink -Destination $VACAgentZip
+    (New-Object System.Net.WebClient).DownloadFile($vacLink,$VACAgentZip)
     If(!(Test-Path $VACAgentZip -PathType Leaf)) {
       Write-Error "Failed to download VACAgent zip"
       Break
