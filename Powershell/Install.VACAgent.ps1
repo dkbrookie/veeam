@@ -61,7 +61,7 @@ Try {
 ## Unzip the downloaded VAC zip
 Start-Process $7zipExe -Wait -ArgumentList "x $vacAgentZip -o""$vacDir"" -y"
 ## Install VAC Agent
-Start-Process msiexec.exe -Wait -ArgumentList "/i ""$vacDir\VACAgent$osVer\VAC.CommunicationAgent.x64.msi"" /qn CC_GATEWAY=$vccUrl VAC_TENANT=$tenantID VAC_TENANT_PASSWORD=$tenantPassword"
+Start-Process msiexec.exe -Wait -ArgumentList "/i ""$vacDir\VACAgent$osVer\VAC.CommunicationAgent.$osVer.msi"" /qn CC_GATEWAY=$vccUrl VAC_TENANT=$tenantID VAC_TENANT_PASSWORD=$tenantPassword"
 #endregion installVAC
 
 ## Once the install is complete with the client creds, the service needs to be restarted to connect to the DKB VCC server
