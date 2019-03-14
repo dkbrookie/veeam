@@ -18,16 +18,13 @@ If ($osVer = 8) {
 }
 
 #region checkFiles
-If ($osVers -eq 'x64') {
+If ($osVer -eq 'x64') {
     $vacLink = "https://drive.google.com/uc?export=download&id=11rsphCqlgdBuMORQiiOkyF4DtRFmhSaz"
 } Else {
     $vacLink = "https://drive.google.com/uc?export=download&id=11vD9jxOTWIDuEU4zCGqZN2DRTxLBFvW7"
 }
 $vacDir = "$env:windir\LTSvc\packages\software\veeam\VACAgent"
 $VACAgentZip = "$vacDir\VACAgent$osVer.zip"
-$7zipDir = "$env:windir\LTSvc\packages\software\7zip"
-$7zipURL = "https://drive.google.com/uc?export=download&id=1254V6vqPLD9mseDHvQns--NLMAGDvpd2"
-$7zipExe = "$7zipDir\7zip.exe"
 
 Try {
   If(!(Test-Path $vacDir)) {
@@ -41,16 +38,6 @@ Try {
       Break
     }
   }
-  If(!(Test-Path $7zipDir)) {
-    New-Item -ItemType Directory $7zipDir | Out-Null
-  }
-  If(!(Test-Path $7zipExe -PathType Leaf)) {
-    Start-BitsTransfer -Source $7zipURL -Destination $7zipExe
-    If(!(Test-Path $7zipExe -PathType Leaf)) {
-      Write-Error "Failed to download VACAgent zip"
-      Break
-    }
-  }
 } Catch {
   Write-Error "Failed to download all required files"
 }
@@ -59,7 +46,9 @@ Try {
 
 #region installVAC
 ## Unzip the downloaded VAC zip
-Start-Process $7zipExe -Wait -ArgumentList "x $vacAgentZip -o""$vacDir"" -y"
+Add-Type -assembly "system.io.compression.filesystem"
+[io.compression.zipfile]::ExtractToDirectory("$VACAgentZip", "$vacDir")
+
 ## Install VAC Agent
 Start-Process msiexec.exe -Wait -ArgumentList "/i ""$vacDir\VACAgent$osVer\VAC.CommunicationAgent.$osVer.msi"" /qn CC_GATEWAY=$vccUrl VAC_TENANT=$tenantID VAC_TENANT_PASSWORD=$tenantPassword"
 #endregion installVAC
