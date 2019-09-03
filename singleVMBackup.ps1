@@ -20,7 +20,7 @@ Start-VBRJob -Job $job
 ## Find the exclude job objects
 $incObjs = $job | Get-VBRJobObject | ?{$_.Type -eq "Exclude"}
 
-## Delete the exclude objects(*Note: this tells VBR to include them again
+## Delete the exclude objects (*Note: this tells VBR to include them again)
 foreach ($obj in $incObjs) {
 	$obj.Delete()
 }
