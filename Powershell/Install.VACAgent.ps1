@@ -19,7 +19,7 @@ If ($osVer = 8) {
 
 #region checkFiles
 If ($osVer -eq 'x64') {
-    $vacLink = "https://drive.google.com/uc?export=download&id=11rsphCqlgdBuMORQiiOkyF4DtRFmhSaz"
+    $vacLink = "https://drive.google.com/uc?export=download&id=11wulxXSdJBPcFPQqYt6p63l4-Gx2OBSv"
 } Else {
     $vacLink = "https://drive.google.com/uc?export=download&id=11vD9jxOTWIDuEU4zCGqZN2DRTxLBFvW7"
 }
