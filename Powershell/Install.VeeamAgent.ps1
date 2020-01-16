@@ -11,7 +11,7 @@ If($rebootKey) {
 }
 
 #region checkFiles
-$agentLink = "https://support.dkbinnovative.com/labtech/transfer/software/veeam/agent/VeeamAgentWindows_2.2.0.589.exe"
+$agentLink = "https://support.dkbinnovative.com/labtech/transfer/software/veeam/agent/VeeamAgentWindows_3.0.2.1170.exe"
 $agentDir = "$env:windir\LTSvc\packages\software\Veeam\Agent"
 $agentExe = "$agentDir\VeeamAgentWindows_2.2.0.589.exe"
 
@@ -35,6 +35,6 @@ Try {
 
 #region installVeeam
 ## Install VAC Agent
-Start-Process $agentExe -Wait -ArgumentList "/silent /accepteula"
+Start-Process $agentExe -Wait -ArgumentList "/silent /accepteula /acceptthirdpartylicenses"
 Write-Host "Veeam Agent installation complete"
 #endregion installVeeam
